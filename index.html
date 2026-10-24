@@ -7,75 +7,17 @@
 const OPS=['+','−','×','÷'],CLASSES=['add','sub','mul','div'];const board=document.getElementById('board'),msg=document.getElementById('message');let values=[],initial=[],solution=[],par=0,swaps=0,finished=false,drag=null;
 const rand=n=>Math.floor(Math.random()*n),shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 function valid(op,a,b,c){return op===0?a+b===c:op===1?a-b===c:op===2?a*b===c:b!==0&&a/b===c}
-function possibleTriples(op){let out=[];for(let a=2;a<=24;a++)for(let b=2;b<=24;b++){let c=op===0?a+b:op===1?a-b:op===2?a*b:a/b;if(!Number.isInteger(c)||c<2||c>24||a===b||a===c||b===c)continue;if(op===1&&a<=b)continue;if(op===3&&(a<=b||b===1||c===1))continue;if(op===2&&(a>10||b>10))continue;out.push([a,b,c])}return out}
-const pools=OPS.map((_,i)=>possibleTriples(i));
-function alternateCount(nums){let count=0;for(let op=0;op<4;op++){for(let i=0;i<12;i++)for(let j=0;j<12;j++)if(i!==j)for(let k=0;k<12;k++)if(k!==i&&k!==j&&valid(op,nums[i],nums[j],nums[k]))count++}return count}
-function minSwapsUnique(a,b){const pos=new Map(b.map((v,i)=>[v,i]));let seen=new Set(),cycles=0;for(let i=0;i<a.length;i++){if(seen.has(i))continue;cycles++;let j=i;while(!seen.has(j)){seen.add(j);j=pos.get(a[j])}}return a.length-cycles}
-// Exact shortest swap distance to ANY complete solution, not just the generated target.
-// The generator uses twelve distinct values, so permutation cycle distance is exact.
-function bestSolutionSwaps(start){
- const choices=[];
- for(let op=0;op<4;op++){
-  let arr=[];
-  for(let i=0;i<12;i++)for(let j=0;j<12;j++){
-   if(i===j)continue;
-   for(let k=0;k<12;k++){
-    if(k===i||k===j||!valid(op,start[i],start[j],start[k]))continue;
-    arr.push({indices:[i,j,k],mask:(1<<i)|(1<<j)|(1<<k)});
-   }
-  }
-  choices.push(arr);
- }
- const target=new Array(12);let best=12;
- function distance(){
-  const pos=new Map(target.map((v,i)=>[v,i]));
-  let seen=0,cycles=0;
-  for(let i=0;i<12;i++){
-   if(seen&(1<<i))continue;
-   cycles++;let j=i;
-   while(!(seen&(1<<j))){seen|=1<<j;j=pos.get(start[j]);}
-  }
-  return 12-cycles;
- }
- function walk(op,mask){
-  if(op===4){best=Math.min(best,distance());return;}
-  for(const t of choices[op]){
-   if(t.mask&mask)continue;
-   for(let j=0;j<3;j++)target[op*3+j]=start[t.indices[j]];
-   walk(op+1,mask|t.mask);
-  }
- }
- walk(0,0);
- return best;
-}
+// Pre-screened boards: all twelve values distinct, mostly single digits,
+// limited complete equation groupings, and verified minimum swap distance.
+// Valid partial equations may still be dead ends; no positional hints are given.
+const PUZZLES=[{"start":[21,2,5,12,8,7,4,9,10,3,24,18],"minimum":9,"solutions":2,"choices":[16,16,6,7]},{"start":[12,17,16,7,5,6,3,24,2,8,22,9],"minimum":7,"solutions":4,"choices":[16,16,4,5]},{"start":[9,8,21,16,2,6,14,5,3,23,18,4],"minimum":8,"solutions":4,"choices":[16,16,5,5]},{"start":[22,16,10,3,8,15,5,6,2,4,9,19],"minimum":9,"solutions":4,"choices":[16,16,5,5]},{"start":[9,16,7,10,24,5,13,3,4,8,2,21],"minimum":8,"solutions":4,"choices":[17,17,5,5]},{"start":[2,8,21,13,11,4,3,5,9,6,18,20],"minimum":7,"solutions":4,"choices":[17,17,5,5]},{"start":[2,24,10,8,9,21,15,17,4,6,5,3],"minimum":9,"solutions":4,"choices":[16,16,6,6]},{"start":[2,24,22,6,8,9,7,3,11,18,15,5],"minimum":8,"solutions":4,"choices":[17,17,5,6]},{"start":[8,18,5,20,19,11,2,6,3,10,4,9],"minimum":8,"solutions":4,"choices":[16,16,7,7]},{"start":[11,5,6,2,21,9,14,3,20,10,8,7],"minimum":8,"solutions":4,"choices":[18,18,5,5]},{"start":[11,4,18,8,7,20,15,3,2,5,6,23],"minimum":8,"solutions":4,"choices":[18,18,5,5]},{"start":[5,4,16,24,13,15,2,8,7,20,3,9],"minimum":8,"solutions":4,"choices":[18,18,5,5]},{"start":[7,9,14,21,18,24,5,16,6,2,3,4],"minimum":6,"solutions":4,"choices":[17,17,6,6]},{"start":[21,5,6,3,15,8,10,9,4,20,7,2],"minimum":8,"solutions":4,"choices":[17,17,7,7]},{"start":[2,3,9,10,7,11,14,16,24,4,5,6],"minimum":8,"solutions":4,"choices":[20,20,4,4]},{"start":[5,2,6,17,20,10,9,7,4,12,3,21],"minimum":8,"solutions":4,"choices":[17,17,7,7]},{"start":[4,20,16,12,9,24,8,10,5,6,7,2],"minimum":8,"solutions":4,"choices":[17,17,7,8]},{"start":[4,3,13,22,11,6,2,8,18,16,5,9],"minimum":8,"solutions":4,"choices":[19,19,5,6]},{"start":[2,24,20,7,15,9,4,3,6,8,10,12],"minimum":8,"solutions":4,"choices":[17,17,7,8]},{"start":[24,11,8,20,2,5,14,4,7,3,9,6],"minimum":6,"solutions":4,"choices":[19,19,6,6]},{"start":[16,12,4,3,18,19,5,2,11,8,6,7],"minimum":8,"solutions":4,"choices":[19,19,6,6]},{"start":[22,5,3,2,8,4,18,10,14,13,6,9],"minimum":9,"solutions":4,"choices":[20,20,5,5]},{"start":[4,24,16,3,10,2,15,20,5,7,6,8],"minimum":8,"solutions":4,"choices":[16,16,9,9]},{"start":[4,7,3,5,16,8,24,18,2,12,15,6],"minimum":8,"solutions":4,"choices":[16,16,9,10]},{"start":[12,13,2,22,5,8,9,3,6,10,14,4],"minimum":6,"solutions":4,"choices":[21,21,5,5]},{"start":[6,3,10,14,2,24,16,5,4,20,9,8],"minimum":6,"solutions":4,"choices":[18,18,8,8]},{"start":[15,5,9,21,10,8,2,7,12,17,3,6],"minimum":6,"solutions":4,"choices":[21,21,5,5]},{"start":[18,12,5,9,4,20,8,24,7,3,6,2],"minimum":7,"solutions":4,"choices":[17,17,9,10]}];
+let lastPuzzle=-1;
 function generate(){
- for(let attempt=0;attempt<50000;attempt++){
-  let chosen=[],used=new Set(),order=shuffle([0,1,2,3]),ok=true;
-  for(const op of order){
-   const pool=pools[op];let found=null;
-   for(let tries=0;tries<90;tries++){
-    const t=pool[rand(pool.length)];
-    if(t.every(n=>!used.has(n))){found=t;break;}
-   }
-   if(!found){ok=false;break;}
-   chosen[op]=found;found.forEach(n=>used.add(n));
-  }
-  if(!ok)continue;
-  const target=chosen.flat();
-  if(target.filter(n=>n<=9).length<7)continue;
-  if(target.filter(n=>n>18).length>2)continue;
-  if(alternateCount(target)<12)continue;
-  for(let tries=0;tries<120;tries++){
-   const start=shuffle(target);
-   const initialDistance=minSwapsUnique(start,target);
-   if(initialDistance<6||initialDistance>9)continue;
-   if([0,1,2,3].some(op=>valid(op,...start.slice(op*3,op*3+3))))continue;
-   const minimum=bestSolutionSwaps(start);
-   if(minimum<5||minimum>9)continue;
-   return {target,start,minimum};
-  }
- }
- throw new Error('Could not generate a Numble puzzle');
+ let idx=rand(PUZZLES.length);
+ if(PUZZLES.length>1&&idx===lastPuzzle)idx=(idx+1+rand(PUZZLES.length-1))%PUZZLES.length;
+ lastPuzzle=idx;
+ const p=PUZZLES[idx];
+ return {target:[],start:p.start.slice(),minimum:p.minimum};
 }
 function render(){board.innerHTML='';let trueCount=0;for(let r=0;r<4;r++){let a=values[r*3],b=values[r*3+1],c=values[r*3+2],good=valid(r,a,b,c);if(good)trueCount++;const row=document.createElement('div');row.className='equation '+CLASSES[r]+(good?' true':'');row.dataset.row=r;for(let j=0;j<5;j++){if(j===1||j===3){let el=document.createElement('span');el.className='operator';el.textContent=j===1?OPS[r]:'=';row.appendChild(el)}else{let idx=r*3+(j===0?0:j===2?1:2),tile=document.createElement('button');tile.type='button';tile.className='tile';tile.dataset.idx=idx;tile.textContent=values[idx];tile.setAttribute('aria-label','Number '+values[idx]+', row '+(r+1));row.appendChild(tile)}}board.appendChild(row)}document.getElementById('remaining').textContent=swaps;if(trueCount===4&&!finished){finished=true;msg.textContent='All four equations are true!';show('You solved Numble!','Swaps: '+swaps+' · Par: '+par+' · Score: '+(swaps===par?'E':swaps>par?'+'+(swaps-par):'−'+(par-swaps)),'Another puzzle')}}
 function swap(a,b){if(finished||a===b)return;[values[a],values[b]]=[values[b],values[a]];swaps++;msg.textContent='';render()}
