@@ -1,30 +1,93 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Numble — Numerum</title><style>
 :root{--ink:#2f3a40;--muted:#6b777c;--cream:#fffaf0;--edge:#343735;--yellow:#f3d77a;--sage:#dce9de;--blue:#b9d4ec;--terra:#e9b3a3}
-*{box-sizing:border-box}body{margin:0;background:white;color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{width:min(100%,520px);padding:22px 14px 38px;margin:0 auto}.top{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin-bottom:28px}.top h1{text-align:center;font-size:31px;letter-spacing:-1.5px;margin:0;font-weight:820}.iconbtn{border:0;background:none;font-size:24px;color:var(--ink);padding:4px;touch-action:manipulation}.board{display:flex;flex-direction:column;gap:12px;align-items:center}.equation{display:grid;grid-template-columns:72px 20px 72px 20px 72px;align-items:center;gap:7px;padding:0;border:0;background:none}.operator{text-align:center;font-size:23px;font-weight:650;color:#59666a}.tile{width:100%;aspect-ratio:1/1;height:auto;min-width:0;background:var(--cream);border:2px solid var(--edge);border-radius:7px;display:grid;place-items:center;font-size:26px;font-weight:780;color:var(--ink);box-shadow:0 3px 0 #d4cfc5;transition:background .16s;user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;padding:0}.tile.dragging{opacity:.38}.equation.true.add .tile{background:var(--yellow)}.equation.true.sub .tile{background:var(--sage)}.equation.true.mul .tile{background:var(--blue)}.equation.true.div .tile{background:var(--terra)}.tile:focus-visible{outline:3px solid #557b96;outline-offset:3px}.swaps{text-align:center;margin:23px 0 0;color:var(--muted);font-size:14px;font-weight:700}.swaps strong{color:var(--ink);font-size:23px;vertical-align:-2px;margin-right:4px}.controls{display:flex;justify-content:center;margin:25px 0 12px}.pill{height:47px;min-width:145px;border-radius:999px;padding:0 20px;font-weight:750;font-size:14px;touch-action:manipulation}.pill.primary{background:var(--yellow);border:1px solid #e8cd73}.message{min-height:25px;text-align:center;font-size:13px;line-height:1.5;color:#5e6c68;margin:12px 0}.overlay{position:fixed;inset:0;background:#ffffffed;display:none;align-items:center;justify-content:center;z-index:30;padding:24px}.overlay.show{display:flex}.dialog{text-align:center;max-width:340px}.dialog h2{font-size:35px;letter-spacing:-1.4px;margin:0 0 10px}.dialog p{line-height:1.55;color:var(--muted)}.dialog .pill{margin-top:15px}.dragcopy{position:fixed;pointer-events:none;z-index:20;box-sizing:border-box;display:grid;place-items:center;border:2px solid var(--edge);border-radius:7px;font-weight:780;color:var(--ink);box-shadow:0 3px 0 #d4cfc5;transform:translate(-50%,-50%);padding:0;line-height:1}.tile.drop-target{outline:3px solid #557b96;outline-offset:2px}@media(max-width:380px){main{padding:16px 10px 26px}.equation{gap:3px;grid-template-columns:64px 18px 64px 18px 64px}.board{gap:10px}.tile{font-size:23px}.operator{font-size:20px}}
+*{box-sizing:border-box}body{margin:0;background:white;color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{width:min(100%,520px);padding:22px 14px 38px;margin:0 auto}.top{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin-bottom:28px}.top h1{text-align:center;font-size:31px;letter-spacing:-1.5px;margin:0;font-weight:820}.iconbtn{border:0;background:none;font-size:24px;color:var(--ink);padding:4px;touch-action:manipulation}.board{display:flex;flex-direction:column;gap:12px;align-items:center}.equation{display:grid;grid-template-columns:90px 25px 90px 25px 90px;align-items:center;gap:8px;padding:0;border:0;background:none}.operator{text-align:center;font-size:29px;font-weight:650;color:#59666a}.tile{width:100%;aspect-ratio:1/1;height:auto;min-width:0;background:var(--cream);border:2px solid var(--edge);border-radius:7px;display:grid;place-items:center;font-size:33px;font-weight:780;color:var(--ink);box-shadow:0 3px 0 #d4cfc5;transition:background .16s;user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;padding:0}.tile.dragging{opacity:.38}.equation.true.add .tile{background:var(--yellow)}.equation.true.sub .tile{background:var(--sage)}.equation.true.mul .tile{background:var(--blue)}.equation.true.div .tile{background:var(--terra)}.tile:focus-visible{outline:3px solid #557b96;outline-offset:3px}.swaps{text-align:center;margin:23px 0 0;color:var(--muted);font-size:14px;font-weight:700}.swaps strong{color:var(--ink);font-size:23px;vertical-align:-2px;margin-right:4px}.controls{display:flex;justify-content:center;margin:25px 0 12px}.pill{height:47px;min-width:145px;border-radius:999px;padding:0 20px;font-weight:750;font-size:14px;touch-action:manipulation}.pill.primary{background:#fff;border:2px solid var(--edge);color:var(--ink)}.message{min-height:25px;text-align:center;font-size:13px;line-height:1.5;color:#5e6c68;margin:12px 0}.overlay{position:fixed;inset:0;background:#ffffffed;display:none;align-items:center;justify-content:center;z-index:30;padding:24px}.overlay.show{display:flex}.dialog{text-align:center;max-width:340px}.dialog h2{font-size:35px;letter-spacing:-1.4px;margin:0 0 10px}.dialog p{line-height:1.55;color:var(--muted)}.dialog .pill{margin-top:15px}.dragcopy{position:fixed;pointer-events:none;z-index:20;box-sizing:border-box;display:grid;place-items:center;border:2px solid var(--edge);border-radius:7px;font-weight:780;color:var(--ink);box-shadow:0 3px 0 #d4cfc5;transform:translate(-50%,-50%);padding:0;line-height:1}.tile.drop-target{outline:3px solid #557b96;outline-offset:2px}@media(max-width:380px){main{padding:16px 10px 26px}.equation{gap:3px;grid-template-columns:80px 22px 80px 22px 80px}.board{gap:10px}.tile{font-size:29px}.operator{font-size:25px}}
+@media(max-width:350px){.equation{grid-template-columns:70px 18px 70px 18px 70px;gap:3px}.tile{font-size:27px}.operator{font-size:23px}}
 </style></head><body><main><div class="top"><button class="iconbtn" id="info" aria-label="How to play">ⓘ</button><h1>Numble</h1><div></div></div><div class="board" id="board"></div><div class="swaps">Swaps: <strong id="remaining">0</strong></div><div class="message" id="message" aria-live="polite"></div><div class="controls"><button class="pill primary" id="new">New puzzle ↗</button></div></main><div class="overlay" id="overlay"><div class="dialog"><h2 id="dialogTitle">Numble</h2><p id="dialogText"></p><button class="pill primary" id="dialogClose">Keep playing</button></div></div><script>
 (()=>{'use strict';
-const OPS=['+','−','×','÷'],CLASSES=['add','sub','mul','div'];const board=document.getElementById('board'),msg=document.getElementById('message');let values=[],initial=[],solution=[],budget=15,remaining=15,finished=false,drag=null;
+const OPS=['+','−','×','÷'],CLASSES=['add','sub','mul','div'];const board=document.getElementById('board'),msg=document.getElementById('message');let values=[],initial=[],solution=[],par=0,swaps=0,finished=false,drag=null;
 const rand=n=>Math.floor(Math.random()*n),shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 function valid(op,a,b,c){return op===0?a+b===c:op===1?a-b===c:op===2?a*b===c:b!==0&&a/b===c}
 function possibleTriples(op){let out=[];for(let a=2;a<=24;a++)for(let b=2;b<=24;b++){let c=op===0?a+b:op===1?a-b:op===2?a*b:a/b;if(!Number.isInteger(c)||c<2||c>24||a===b||a===c||b===c)continue;if(op===1&&a<=b)continue;if(op===3&&(a<=b||b===1||c===1))continue;if(op===2&&(a>10||b>10))continue;out.push([a,b,c])}return out}
 const pools=OPS.map((_,i)=>possibleTriples(i));
 function alternateCount(nums){let count=0;for(let op=0;op<4;op++){for(let i=0;i<12;i++)for(let j=0;j<12;j++)if(i!==j)for(let k=0;k<12;k++)if(k!==i&&k!==j&&valid(op,nums[i],nums[j],nums[k]))count++}return count}
 function minSwapsUnique(a,b){const pos=new Map(b.map((v,i)=>[v,i]));let seen=new Set(),cycles=0;for(let i=0;i<a.length;i++){if(seen.has(i))continue;cycles++;let j=i;while(!seen.has(j)){seen.add(j);j=pos.get(a[j])}}return a.length-cycles}
-function generate(){let triples=null;for(let attempt=0;attempt<24000;attempt++){let chosen=[],used=new Set();let order=shuffle([0,1,2,3]);let ok=true;for(const op of order){const pool=pools[op];let found=null;for(let tries=0;tries<90;tries++){let t=pool[rand(pool.length)];if(t.every(n=>!used.has(n))){found=t;break}}if(!found){ok=false;break}chosen[op]=found;found.forEach(n=>used.add(n))}if(!ok)continue;let nums=chosen.flat();if(nums.filter(n=>n<=9).length<7)continue;if(nums.filter(n=>n>18).length>2)continue;if(alternateCount(nums)<12)continue;triples=chosen;break}
-if(!triples){return generate()} // retry with a fresh set of candidates
-let target=triples.flat(),start,minimum;for(let tries=0;tries<1500;tries++){start=shuffle(target);minimum=minSwapsUnique(start,target);if(minimum>=6&&minimum<=9&&[0,1,2,3].every(op=>!valid(op,...start.slice(op*3,op*3+3))))break}
-return {target,start,minimum};}
-function render(){board.innerHTML='';let trueCount=0;for(let r=0;r<4;r++){let a=values[r*3],b=values[r*3+1],c=values[r*3+2],good=valid(r,a,b,c);if(good)trueCount++;const row=document.createElement('div');row.className='equation '+CLASSES[r]+(good?' true':'');row.dataset.row=r;for(let j=0;j<5;j++){if(j===1||j===3){let el=document.createElement('span');el.className='operator';el.textContent=j===1?OPS[r]:'=';row.appendChild(el)}else{let idx=r*3+(j===0?0:j===2?1:2),tile=document.createElement('button');tile.type='button';tile.className='tile';tile.dataset.idx=idx;tile.textContent=values[idx];tile.setAttribute('aria-label','Number '+values[idx]+', row '+(r+1));row.appendChild(tile)}}board.appendChild(row)}document.getElementById('remaining').textContent=budget-remaining;if(trueCount===4&&!finished){finished=true;msg.textContent='All four equations are true!';show('You solved Numble!','You finished with '+remaining+' swap'+(remaining===1?'':'s')+' remaining.','Another puzzle')}else if(remaining===0&&!finished){finished=true;msg.textContent='Out of swaps.';show('Out of swaps','You made '+budget+' swaps. Try again, or generate a new puzzle.','Try again')}}
-function swap(a,b){if(finished||a===b)return;if(remaining<=0)return;[values[a],values[b]]=[values[b],values[a]];remaining--;msg.textContent='';render()}
-function startPuzzle(){const p=generate();solution=p.target;initial=p.start;values=initial.slice();budget=15;remaining=15;finished=false;msg.textContent='';render()}
-function restart(){values=initial.slice();remaining=budget;finished=false;msg.textContent='';render()}
+// Exact shortest swap distance to ANY complete solution, not just the generated target.
+// The generator uses twelve distinct values, so permutation cycle distance is exact.
+function bestSolutionSwaps(start){
+ const choices=[];
+ for(let op=0;op<4;op++){
+  let arr=[];
+  for(let i=0;i<12;i++)for(let j=0;j<12;j++){
+   if(i===j)continue;
+   for(let k=0;k<12;k++){
+    if(k===i||k===j||!valid(op,start[i],start[j],start[k]))continue;
+    arr.push({indices:[i,j,k],mask:(1<<i)|(1<<j)|(1<<k)});
+   }
+  }
+  choices.push(arr);
+ }
+ const target=new Array(12);let best=12;
+ function distance(){
+  const pos=new Map(target.map((v,i)=>[v,i]));
+  let seen=0,cycles=0;
+  for(let i=0;i<12;i++){
+   if(seen&(1<<i))continue;
+   cycles++;let j=i;
+   while(!(seen&(1<<j))){seen|=1<<j;j=pos.get(start[j]);}
+  }
+  return 12-cycles;
+ }
+ function walk(op,mask){
+  if(op===4){best=Math.min(best,distance());return;}
+  for(const t of choices[op]){
+   if(t.mask&mask)continue;
+   for(let j=0;j<3;j++)target[op*3+j]=start[t.indices[j]];
+   walk(op+1,mask|t.mask);
+  }
+ }
+ walk(0,0);
+ return best;
+}
+function generate(){
+ for(let attempt=0;attempt<50000;attempt++){
+  let chosen=[],used=new Set(),order=shuffle([0,1,2,3]),ok=true;
+  for(const op of order){
+   const pool=pools[op];let found=null;
+   for(let tries=0;tries<90;tries++){
+    const t=pool[rand(pool.length)];
+    if(t.every(n=>!used.has(n))){found=t;break;}
+   }
+   if(!found){ok=false;break;}
+   chosen[op]=found;found.forEach(n=>used.add(n));
+  }
+  if(!ok)continue;
+  const target=chosen.flat();
+  if(target.filter(n=>n<=9).length<7)continue;
+  if(target.filter(n=>n>18).length>2)continue;
+  if(alternateCount(target)<12)continue;
+  for(let tries=0;tries<120;tries++){
+   const start=shuffle(target);
+   const initialDistance=minSwapsUnique(start,target);
+   if(initialDistance<6||initialDistance>9)continue;
+   if([0,1,2,3].some(op=>valid(op,...start.slice(op*3,op*3+3))))continue;
+   const minimum=bestSolutionSwaps(start);
+   if(minimum<5||minimum>9)continue;
+   return {target,start,minimum};
+  }
+ }
+ throw new Error('Could not generate a Numble puzzle');
+}
+function render(){board.innerHTML='';let trueCount=0;for(let r=0;r<4;r++){let a=values[r*3],b=values[r*3+1],c=values[r*3+2],good=valid(r,a,b,c);if(good)trueCount++;const row=document.createElement('div');row.className='equation '+CLASSES[r]+(good?' true':'');row.dataset.row=r;for(let j=0;j<5;j++){if(j===1||j===3){let el=document.createElement('span');el.className='operator';el.textContent=j===1?OPS[r]:'=';row.appendChild(el)}else{let idx=r*3+(j===0?0:j===2?1:2),tile=document.createElement('button');tile.type='button';tile.className='tile';tile.dataset.idx=idx;tile.textContent=values[idx];tile.setAttribute('aria-label','Number '+values[idx]+', row '+(r+1));row.appendChild(tile)}}board.appendChild(row)}document.getElementById('remaining').textContent=swaps;if(trueCount===4&&!finished){finished=true;msg.textContent='All four equations are true!';show('You solved Numble!','Swaps: '+swaps+' · Par: '+par+' · Score: '+(swaps===par?'E':swaps>par?'+'+(swaps-par):'−'+(par-swaps)),'Another puzzle')}}
+function swap(a,b){if(finished||a===b)return;[values[a],values[b]]=[values[b],values[a]];swaps++;msg.textContent='';render()}
+function startPuzzle(){const p=generate();solution=p.target;initial=p.start;values=initial.slice();par=p.minimum+3;swaps=0;finished=false;msg.textContent='';render()}
+
 function show(title,body,action){document.getElementById('dialogTitle').textContent=title;document.getElementById('dialogText').textContent=body;document.getElementById('dialogClose').textContent=action;document.getElementById('overlay').classList.add('show')}
 function hide(){document.getElementById('overlay').classList.remove('show')}
 function clearDrag(){if(!drag)return;drag.ghost?.remove();drag.source?.classList.remove('dragging');board.querySelectorAll('.drop-target').forEach(t=>t.classList.remove('drop-target'));drag=null}
-board.addEventListener('pointerdown',e=>{const t=e.target.closest('.tile');if(!t||finished||remaining===0)return;if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();const rect=t.getBoundingClientRect();drag={idx:+t.dataset.idx,x:e.clientX,y:e.clientY,pointer:e.pointerId,source:t,rect,ghost:null,moved:false};try{t.setPointerCapture(e.pointerId)}catch{}});
+board.addEventListener('pointerdown',e=>{const t=e.target.closest('.tile');if(!t||finished)return;if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();const rect=t.getBoundingClientRect();drag={idx:+t.dataset.idx,x:e.clientX,y:e.clientY,pointer:e.pointerId,source:t,rect,ghost:null,moved:false};try{t.setPointerCapture(e.pointerId)}catch{}});
 board.addEventListener('pointermove',e=>{if(!drag||drag.pointer!==e.pointerId)return;const d=drag;if(!d.moved&&Math.hypot(e.clientX-d.x,e.clientY-d.y)>7){d.moved=true;d.source.classList.add('dragging');const ghost=document.createElement('div');ghost.className='dragcopy';ghost.textContent=values[d.idx];ghost.style.width=d.rect.width+'px';ghost.style.height=d.rect.height+'px';ghost.style.fontSize=getComputedStyle(d.source).fontSize;ghost.style.background=getComputedStyle(d.source).backgroundColor;document.body.appendChild(ghost);d.ghost=ghost}if(d.ghost){d.ghost.style.left=e.clientX+'px';d.ghost.style.top=e.clientY+'px';board.querySelectorAll('.drop-target').forEach(t=>t.classList.remove('drop-target'));const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile');if(target&&+target.dataset.idx!==d.idx)target.classList.add('drop-target')}});
 board.addEventListener('pointerup',e=>{if(!drag||drag.pointer!==e.pointerId)return;const d=drag;const target=d.moved?document.elementFromPoint(e.clientX,e.clientY)?.closest('.tile'):null;const targetIdx=target?+target.dataset.idx:null;clearDrag();if(targetIdx!==null&&targetIdx!==d.idx)swap(d.idx,targetIdx)});
 board.addEventListener('pointercancel',clearDrag);
-document.getElementById('new').addEventListener('click',startPuzzle);document.getElementById('info').addEventListener('click',()=>show('How to play','Swap numbers until all four equations are true. A valid equation changes color, but it may not be part of the final solution. Drag one number onto another to swap them.','Got it'));document.getElementById('dialogClose').addEventListener('click',()=>{const label=document.getElementById('dialogClose').textContent;hide();if(label==='Another puzzle')startPuzzle();else if(label==='Try again')restart()});startPuzzle();
+document.getElementById('new').addEventListener('click',startPuzzle);document.getElementById('info').addEventListener('click',()=>show('How to play','Swap numbers until all four equations are true. A valid equation changes color, but it may not be part of the final solution. Drag one number onto another to swap them.','Got it'));document.getElementById('dialogClose').addEventListener('click',()=>{const label=document.getElementById('dialogClose').textContent;hide();if(label==='Another puzzle')startPuzzle();});startPuzzle();
 })();
 </script></body></html>
